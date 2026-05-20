@@ -1,3 +1,4 @@
+import math
 import re
 from datetime import datetime
 
@@ -232,3 +233,112 @@ class Meeting:
 
         return result
 
+
+class GeometricObject:
+    def __init__(self, x: float = 0.0, y: float = 0.0, color: str = "black", filled: bool = False):
+        # Приватные атрибуты (согласно диаграмме __x, __y)
+        self.__x = x
+        self.__y = y
+        # Публичные атрибуты
+        self.color = color
+        self.filled = filled
+
+    def set_coordinate(self, x: float, y: float) -> None:
+        self.__x = x
+        self.__y = y
+
+    def set_color(self, color: str) -> None:
+        self.color = color
+
+    def set_filled(self, filled: bool) -> None:
+        self.filled = filled
+
+    def get_x(self) -> float:
+        return self.__x
+
+    def get_y(self) -> float:
+        return self.__y
+
+    def get_color(self) -> str:
+        return self.color
+
+    def is_filled(self) -> bool:
+        return self.filled
+
+    def __str__(self) -> str:
+        return f"GeometricObject(x={self.__x}, y={self.__y}, color='{self.color}', filled={self.filled})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Circle(GeometricObject):
+    def __init__(self, radius: float = 0, x: float = 0.0, y: float = 0.0, color: str = "black", filled: bool = False):
+        # Вызов конструктора родительского класса
+        super().__init__(x, y, color, filled)
+        # Приватный атрибут
+        self.__radius = radius
+
+    # Реализация radius.getter() через декоратор property
+    @property
+    def radius(self) -> float:
+        return self.__radius
+
+    # Реализация radius.setter(Real)
+    @radius.setter
+    def radius(self, value: float) -> None:
+        if value < 0:
+            self.__radius = 0
+        self.__radius = value
+
+    def get_area(self) -> float:
+        return math.pi * (self.__radius ** 2)
+
+    def get_perimetr(self) -> float:
+        return 2 * math.pi * self.__radius
+
+    def get_diametr(self) -> float:
+        return 2 * self.__radius
+
+    def __str__(self) -> str:
+        return f"Circle(radius={self.__radius}, x={self.get_x()}, y={self.get_y()}, color='{self.color}', filled={self.filled})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Rectangle(GeometricObject):
+    def __init__(self, width: float = 0, height: float = 0, x: float = 0.0, y: float = 0.0, color: str = "black", filled: bool = False):
+        # Вызов конструктора родительского класса
+        super().__init__(x, y, color, filled)
+        # Публичные атрибуты (судя по отсутствию __ в диаграмме)
+        self.width = width
+        self.height = height
+
+    def set_width(self, width: float) -> None:
+        if width < 0:
+             self.width = 0
+        self.width = width
+
+    def set_height(self, height: float) -> None:
+        if height < 0:
+             self.height = 0
+        self.height = height
+
+    def get_width(self) -> float:
+        return self.width
+
+    def get_height(self) -> float:
+        return self.height
+
+    def get_area(self) -> float:
+        return self.width * self.height
+
+    def get_perimetr(self) -> float:
+        return 2 * (self.width + self.height)
+
+    def __str__(self) -> str:
+        return f"Rectangle(width={self.width}, height={self.height}, x={self.get_x()}, y={self.get_y()}, color='{self.color}', filled={self.filled})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
