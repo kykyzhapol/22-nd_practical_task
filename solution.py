@@ -71,3 +71,63 @@ class Date:
 
     def __str__(self):
         return self.__in_date
+
+
+class AirTicket:
+    def __init__(self, passenger_name, _from, to, date_time, flight, seat, _class, gate):
+        self.passenger_name = passenger_name
+        self._from = _from
+        self.to = to
+        self.date_time = date_time
+        self.flight = flight
+        self.seat = seat
+        self._class = _class
+        self.gate = gate
+
+    def __str__(self):
+        # Форматируем под ширину столбцов вашей шапки:
+        # |     NAME       |FROM|TO |   DATE/TIME    |       FLIGHT       |SEAT|CLS|GATE|
+        return (f"| {self.passenger_name:<14} "
+                f"|{self._from:<4}"
+                f"|{self.to:<3} "
+                f"| {self.date_time:<14} "
+                f"| {self.flight:<18} "
+                f"|{self.seat:<4}"
+                f"|{self._class:<3}"
+                f"|{self.gate:<4}|")
+
+
+class Load:
+    # Делаем data атрибутом самого класса, а не конкретного объекта
+    data = []
+
+    @classmethod
+    def write(cls, file_path):
+        cls.data = []  # Очищаем перед загрузкой
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                # Читаем строки, игнорируя абсолютно пустые
+                lines = [line.strip() for line in file if line.strip()]
+
+                if not lines:
+                    print(f" ПРЕДУПРЕЖДЕНИЕ: Файл '{file_path}' пустой!")
+                    return cls.data
+
+                # Заголовки (первая строка) пропускаем, идем по данным
+                for line_num, line in enumerate(lines[1:], start=2):
+                    # Разбиваем строку по точке с запятой
+                    values = line.split(';')
+
+                    # Если полей вдруг меньше 8, добьем их пустыми строками, чтобы код не падал
+                    while len(values) < 8:
+                        values.append("")
+
+                    # Берем только первые 8 значений, если их больше
+                    ticket = AirTicket(*values[:8])
+                    cls.data.append(ticket)
+
+        except FileNotFoundError:
+            print(f" ОШИБКА: Файл '{file_path}' не найден в папке с проектом!")
+            print("Убедитесь, что он лежит в той же директории, откуда вы запускаете код.")
+
+        return cls.data
